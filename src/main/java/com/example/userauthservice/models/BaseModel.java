@@ -19,12 +19,14 @@ public abstract class BaseModel {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false, updatable = false)
   @CreatedDate
   private Date createdAt;
 
+  @Column(nullable = false)
   @LastModifiedDate
   private Date updatedAt;
 
   @Enumerated(EnumType.STRING)
-  private Status status;
+  private Status status = Status.ACTIVE;
 }
