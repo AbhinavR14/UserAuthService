@@ -27,6 +27,17 @@ public class ObjectMapper {
   }
 
 //  public static Role from(RoleDto roleDto) {
-//    return new Role()
+//    Role role = new Role();
+//    role.setRoleName(roleDto.getRoleName());
+//    role.setStatus(roleDto.getStatus());
+//    return role;
 //  }
+
+  public static RoleDto from(Role role) {
+    RoleDto roleDto = new RoleDto();
+    roleDto.setId(role.getId());
+    roleDto.setRoleName(role.getRoleName());
+    roleDto.setStatus(role.getStatus());
+    return roleDto;
+  }
 }

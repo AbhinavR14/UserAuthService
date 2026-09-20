@@ -8,6 +8,7 @@ import com.example.userauthservice.exceptions.PasswordMissmatchException;
 import com.example.userauthservice.exceptions.UserAlreadyExistsException;
 import com.example.userauthservice.exceptions.UserNotSignedUpException;
 import com.example.userauthservice.models.Role;
+import com.example.userauthservice.models.Status;
 import com.example.userauthservice.models.User;
 import com.example.userauthservice.repositories.RoleRepo;
 import com.example.userauthservice.repositories.UserRepo;
@@ -29,10 +30,13 @@ import java.util.Optional;
 public class AuthService implements IAuthService {
 
   @Autowired
-  private UserRepo userRepo;
+  private IRoleService roleService;
 
   @Autowired
-  private RoleRepo roleRepo;
+  private UserRepo userRepo;
+
+//  @Autowired
+//  private RoleRepo roleRepo;
 
   @Autowired
   private UserSessionRepo userSessionRepo;
@@ -49,7 +53,7 @@ public class AuthService implements IAuthService {
   @Autowired
   private ObjectMapper objectMapper;
 
-  private final long EXPIRATION = 1000 * 60 * 60;     // 1 hr -> 1000 ms * 60 * 60 = 36,00,000
+  private static final long EXPIRATION = 1000 * 60 * 60;     // 1 hr -> 1000 ms * 60 * 60 = 36,00,000
 
   @Override
   public User signup(String name, String email, String password, String phoneNumber) {
@@ -63,19 +67,9 @@ public class AuthService implements IAuthService {
     user.setPassword(bCryptPasswordEncoder.encode(password));
     user.setPhoneNumber(phoneNumber);
 
-    Role role;
-    String non_admin = "NON-ADMIN";
-
-    Optional<Role> roleOptional = roleRepo.findByRoleName(non_admin);
-    if (roleOptional.isEmpty()) {
-      role = new Role();
-      role.setRoleName(non_admin);
-      roleRepo.save(role);
-    }
-    else
-      role = roleOptional.get();
-
+    Role role = roleService.getRoleByName("CUSTOMER");
     user.setRoles(List.of(role));
+
     userRepo.save(user);
 
     EmailDto emailDto = new EmailDto();
@@ -95,18 +89,23 @@ public class AuthService implements IAuthService {
 
   @Override
   public UserSession login(String email, String password) throws InvalidCredentialsException {
-    Optional<User> userOptional = userRepo.findByEmail(email);
+    User user = userRepo.findByEmail(email)
+            .orElseThrow(() -> new InvalidCredentialsException(new UserNotSignedUpException("Please signup first!")));
 
-    if (userOptional.isEmpty())
-        throw new InvalidCredentialsException(new UserNotSignedUpException("Please signup first!"));
-
-    User user = userOptional.get();
     if (!bCryptPasswordEncoder.matches(password, user.getPassword()))
         throw new InvalidCredentialsException(new PasswordMissmatchException("Please check your password!"));
 
     Map<String, Object> claims = new HashMap<>();     // This is our "payload"
     claims.put("user_id", user.getId());
+
+    List<String> roles = user.getRoles().stream()
+                                        .filter(role -> role.getStatus() == Status.ACTIVE)
+                                        .map(Role::getRoleName)
+                                        .toList();
+    claims.put("roles", roles);
+
     claims.put("issuer", "scaler");
+
     Long currentTime = System.currentTimeMillis();
     claims.put("iat", currentTime);
     claims.put("exp", currentTime + EXPIRATION);      // currentTime + 1hr

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 
 @Getter
-@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseModel {
@@ -29,4 +28,8 @@ public abstract class BaseModel {
 
   @Enumerated(EnumType.STRING)
   private Status status = Status.ACTIVE;
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
 }
