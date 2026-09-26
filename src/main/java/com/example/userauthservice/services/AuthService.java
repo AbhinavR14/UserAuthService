@@ -2,7 +2,7 @@ package com.example.userauthservice.services;
 
 import com.example.userauthservice.clients.KafkaProducerClient;
 import com.example.userauthservice.dtos.EmailDto;
-import com.example.userauthservice.dtos.UserSession;
+import com.example.userauthservice.models.UserSession;
 import com.example.userauthservice.exceptions.InvalidCredentialsException;
 import com.example.userauthservice.exceptions.PasswordMissmatchException;
 import com.example.userauthservice.exceptions.UserAlreadyExistsException;
@@ -10,7 +10,6 @@ import com.example.userauthservice.exceptions.UserNotSignedUpException;
 import com.example.userauthservice.models.Role;
 import com.example.userauthservice.models.Status;
 import com.example.userauthservice.models.User;
-import com.example.userauthservice.repositories.RoleRepo;
 import com.example.userauthservice.repositories.UserRepo;
 import com.example.userauthservice.repositories.UserSessionRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -78,11 +77,11 @@ public class AuthService implements IAuthService {
     emailDto.setSubject("Welcome to Scaler");
     emailDto.setBody("Have a good learning experience");
 
-    try {
-      kafkaProducerClient.sendMessage("signup", objectMapper.writeValueAsString(emailDto));
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e.getMessage());
-    }
+//    try {
+//      kafkaProducerClient.sendMessage("signup", objectMapper.writeValueAsString(emailDto));
+//    } catch (JsonProcessingException e) {
+//      throw new RuntimeException(e.getMessage());
+//    }
 
     return user;
   }

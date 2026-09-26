@@ -18,7 +18,9 @@ public class ObjectMapper {
     List<RoleDto> roleDtos = new ArrayList<>();
     for (Role role : user.getRoles()) {
       RoleDto roleDto = new RoleDto();
+      roleDto.setId(role.getId());
       roleDto.setRoleName(role.getRoleName());
+      roleDto.setStatus(role.getStatus());
       roleDtos.add(roleDto);
     }
     userDto.setRoles(roleDtos);

@@ -1,6 +1,6 @@
 package com.example.userauthservice.services;
 
-import com.example.userauthservice.dtos.UserSession;
+import com.example.userauthservice.models.UserSession;
 import com.example.userauthservice.exceptions.InvalidCredentialsException;
 import com.example.userauthservice.models.User;
 

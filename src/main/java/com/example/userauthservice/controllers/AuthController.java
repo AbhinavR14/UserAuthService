@@ -2,8 +2,8 @@ package com.example.userauthservice.controllers;
 
 import com.example.userauthservice.dtos.*;
 import com.example.userauthservice.exceptions.InvalidCredentialsException;
-import com.example.userauthservice.models.Role;
 import com.example.userauthservice.models.User;
+import com.example.userauthservice.models.UserSession;
 import com.example.userauthservice.services.IAuthService;
 import com.example.userauthservice.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")

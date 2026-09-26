@@ -31,6 +31,12 @@ public class RoleService implements IRoleService {
   }
 
   @Override
+  public Role getRoleById(Long roleId) {
+    return roleRepo.findById(roleId)
+            .orElseThrow(() -> new RoleNotFoundException("Role with id " + roleId + " not found"));
+  }
+
+  @Override
   public Role getRoleByName(String roleName) {
     return roleRepo.findByRoleNameAndStatus(roleName, Status.ACTIVE)
             .orElseThrow(() -> new RoleNotFoundException("Active role not found: " + roleName));
@@ -62,6 +68,19 @@ public class RoleService implements IRoleService {
       throw new InvalidRoleOperationException("Deleted role cannot be deactivated: " + roleId);
 
     role.setStatus(Status.INACTIVE);
+    return roleRepo.save(role);
+  }
+
+  @Override
+  public Role deleteRole(Long roleId) {
+    Role role = roleRepo.findById(roleId)
+            .orElseThrow(() -> new RoleNotFoundException("Role with id " + roleId + " not found"));
+
+    if (role.getStatus() == Status.DELETED)
+      throw new RoleNotFoundException("Role is already deleted: " + roleId);
+
+    role.setStatus(Status.DELETED);
+
     return roleRepo.save(role);
   }
 

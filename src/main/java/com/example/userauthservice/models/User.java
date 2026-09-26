@@ -1,6 +1,8 @@
 package com.example.userauthservice.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +21,10 @@ public class User extends BaseModel {
   private String phoneNumber;
 
   @ManyToMany
+  @JoinTable(
+          name = "user_roles",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
   private List<Role> roles = new ArrayList<>();
 }

@@ -48,4 +48,11 @@ public class RoleController {
     return ResponseEntity.ok(ObjectMapper.from(role));
   }
 
+  @DeleteMapping("/{roleId}")
+  public ResponseEntity<RoleDto> deleteRole(@PathVariable("roleId") Long roleId) {
+    Role role = roleService.deleteRole(roleId);
+
+    return ResponseEntity.ok(ObjectMapper.from(role));
+  }
+
 }
