@@ -34,9 +34,6 @@ public class AuthService implements IAuthService {
   @Autowired
   private UserRepo userRepo;
 
-//  @Autowired
-//  private RoleRepo roleRepo;
-
   @Autowired
   private UserSessionRepo userSessionRepo;
 

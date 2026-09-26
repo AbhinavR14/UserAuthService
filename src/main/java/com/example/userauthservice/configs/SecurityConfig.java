@@ -29,6 +29,7 @@ public class SecurityConfig {     // This will have more priority than the prede
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/roles/**").hasRole("ADMIN")
+                    .requestMatchers("/users/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
 //                    .anyRequest().permitAll()
             )

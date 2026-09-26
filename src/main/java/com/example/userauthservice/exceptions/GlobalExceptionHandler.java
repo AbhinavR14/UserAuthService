@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(UserAlreadyExistsException.class)
-  public ResponseEntity<String> handleUserAlreadyExists(
-          UserAlreadyExistsException exception) {
-
+  public ResponseEntity<String> handleUserAlreadyExists(UserAlreadyExistsException exception) {
     return new ResponseEntity<>(
             exception.getMessage(),
             HttpStatus.CONFLICT
@@ -49,7 +47,5 @@ public class GlobalExceptionHandler {
             HttpStatus.UNAUTHORIZED
     );
   }
-
-
 
 }

@@ -21,13 +21,9 @@ public class UserService implements IUserService{
   private UserRepo userRepo;
 
   @Override
-  public User getUserDetails(long id) {
-    Optional<User> userOptional = userRepo.findById(id);
-
-    if (userOptional.isPresent())
-      return userOptional.get();
-
-    return null;
+  public User getUserDetails(long userId) {
+    return userRepo.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found."));
   }
 
   @Override
@@ -44,6 +40,21 @@ public class UserService implements IUserService{
       throw new InvalidRoleOperationException("User already has this role assigned: " + roleId);
 
     user.getRoles().add(role);
+
+    return userRepo.save(user);
+  }
+
+  @Override
+  public User removeRole(Long userId, Long roleId) {
+    User user = userRepo.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found."));
+
+    Role role = roleService.getRoleById(roleId);
+
+    if (!user.getRoles().contains(role))
+      throw new InvalidRoleOperationException("User does not have this role assigned: " + roleId);
+
+    user.getRoles().remove(role);
 
     return userRepo.save(user);
   }
