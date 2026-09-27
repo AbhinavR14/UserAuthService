@@ -1,5 +1,8 @@
 package com.example.userauthservice.filters;
 
+import com.example.userauthservice.models.Status;
+import com.example.userauthservice.models.User;
+import com.example.userauthservice.repositories.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -24,9 +27,11 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final SecretKey secretKey;
+  private final UserRepo userRepo;
 
-  public JwtAuthenticationFilter(SecretKey secretKey) {
+  public JwtAuthenticationFilter(SecretKey secretKey, UserRepo userRepo) {
     this.secretKey = secretKey;
+    this.userRepo = userRepo;
   }
 
   @Override
@@ -51,7 +56,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       Long userId = claims.get("user_id", Long.class);
 
+      User user = userRepo.findByIdAndStatus(userId, Status.ACTIVE)
+                          .orElse(null);
+
+      if (user == null) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
+
       List<?> roleObjects = claims.get("roles", List.class);
+
+      if (roleObjects == null) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
 
       List<String> roles = roleObjects.stream()
               .map(Object::toString)

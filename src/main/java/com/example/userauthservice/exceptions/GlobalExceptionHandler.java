@@ -48,4 +48,20 @@ public class GlobalExceptionHandler {
     );
   }
 
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<String> handleUserNotFound(UserNotFoundException exception) {
+    return new ResponseEntity<>(
+            exception.getMessage(),
+            HttpStatus.NOT_FOUND
+    );
+  }
+
+  @ExceptionHandler(InvalidUserOperationException.class)
+  public ResponseEntity<String> handleInvalidUserOperation(InvalidUserOperationException exception) {
+    return new ResponseEntity<>(
+            exception.getMessage(),
+            HttpStatus.BAD_REQUEST
+    );
+  }
+
 }

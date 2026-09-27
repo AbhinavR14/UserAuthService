@@ -2,11 +2,8 @@ package com.example.userauthservice.services;
 
 import com.example.userauthservice.clients.KafkaProducerClient;
 import com.example.userauthservice.dtos.EmailDto;
+import com.example.userauthservice.exceptions.*;
 import com.example.userauthservice.models.UserSession;
-import com.example.userauthservice.exceptions.InvalidCredentialsException;
-import com.example.userauthservice.exceptions.PasswordMissmatchException;
-import com.example.userauthservice.exceptions.UserAlreadyExistsException;
-import com.example.userauthservice.exceptions.UserNotSignedUpException;
 import com.example.userauthservice.models.Role;
 import com.example.userauthservice.models.Status;
 import com.example.userauthservice.models.User;
@@ -87,6 +84,9 @@ public class AuthService implements IAuthService {
   public UserSession login(String email, String password) throws InvalidCredentialsException {
     User user = userRepo.findByEmail(email)
             .orElseThrow(() -> new InvalidCredentialsException(new UserNotSignedUpException("Please signup first!")));
+
+    if (user.getStatus() != Status.ACTIVE)
+      throw new InvalidCredentialsException(new UserNotActiveException("User account is not active."));
 
     if (!bCryptPasswordEncoder.matches(password, user.getPassword()))
         throw new InvalidCredentialsException(new PasswordMissmatchException("Please check your password!"));

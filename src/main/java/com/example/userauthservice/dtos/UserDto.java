@@ -1,5 +1,6 @@
 package com.example.userauthservice.dtos;
 
+import com.example.userauthservice.models.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,4 +13,5 @@ public class UserDto {
   private String name;
   private String email;
   private List<RoleDto> roles;
+  private Status status;
 }
