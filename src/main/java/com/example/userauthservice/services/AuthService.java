@@ -71,11 +71,11 @@ public class AuthService implements IAuthService {
     emailDto.setSubject("Welcome to Scaler");
     emailDto.setBody("Have a good learning experience");
 
-//    try {
-//      kafkaProducerClient.sendMessage("signup", objectMapper.writeValueAsString(emailDto));
-//    } catch (JsonProcessingException e) {
-//      throw new RuntimeException(e.getMessage());
-//    }
+    try {
+      kafkaProducerClient.sendMessage("signup", objectMapper.writeValueAsString(emailDto));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e.getMessage());
+    }
 
     return user;
   }
